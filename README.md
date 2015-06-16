@@ -1,0 +1,33 @@
+# RCI
+
+(R)edis (C)lient (I)nstrumenter
+
+Adds ActiveSpport::Notifications to calls made against redis using the official redis clients
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'rci'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install rci
+
+## Usage
+
+TODO: Write usage instructions here
+
+## Contributing
+
+1. Fork it ( https://github.com/[my-github-username]/rci/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
