@@ -22,7 +22,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Since the instrumentation depends on being able to query the server for the commands
+it supports you'll need to initialize everything with one of two methods:
+
+```
+redis = Redis.new
+
+# Attach to every Redis client in the system (most apps will do this)
+RCI.setup(redis)
+
+# Attach to only a specific Redis client
+RCI.attach_instrumentation_to(redis)
+```
+
+Both of these methods will call out to the Redis server to get a list of commands before
+attaching the instrumentation.
 
 ## Contributing
 

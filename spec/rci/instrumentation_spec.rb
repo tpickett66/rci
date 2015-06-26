@@ -5,7 +5,7 @@ module RCI
     let(:redis) { Redis.new }
 
     before do
-      redis.client.singleton_class.send :prepend, RCI::Instrumentation
+      RCI.attach_instrumentation_to(redis)
     end
 
     describe '#call(command, &block)' do
