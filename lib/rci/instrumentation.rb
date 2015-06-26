@@ -5,7 +5,7 @@ module RCI
   module Instrumentation
     def call(command, &block)
       payload = extract_notification_payload_from(command)
-      ActiveSupport::Notifications.instrument("redis", payload) do
+      ActiveSupport::Notifications.instrument("#{ Commands.command_type(command) }.redis", payload) do
         super
       end
     end

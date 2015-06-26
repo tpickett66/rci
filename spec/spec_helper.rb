@@ -13,4 +13,8 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.include NotificationHelpers
+
+  config.before(:all) do
+    RCI::Commands.discover!(Redis.new)
+  end
 end

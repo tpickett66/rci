@@ -37,6 +37,22 @@ module RCI
           expect(caught_payload[:subcommand]).to eq :exists
         end
       end
+
+      it 'must emit events to "read.redis" for commands that strictly read values' do
+        event_received = false
+        with_subscription_to('read.redis', ->(*_) { event_received = true }) do
+          redis.keys('abc123*')
+          expect(event_received).to eq true
+        end
+      end
+
+      it 'must emit events to "write.redis" for commands that may alter values' do
+        event_received = false
+        with_subscription_to('write.redis', ->(*_) { event_received = true }) do
+          redis.psetex('__RCI-string-key-for-testing__', 1, 'This is my expiring string')
+          expect(event_received).to eq true
+        end
+      end
     end
   end
 end
