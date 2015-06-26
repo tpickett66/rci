@@ -10,15 +10,10 @@ module RCI
 
     describe '#call(command, &block)' do
       it 'must emit an ActiveSupport::Notification event with the name ending in "redis"' do
-        begin
-          event_received = false
-          subscription = ActiveSupport::Notifications.subscribe(/redis\z/) do |*args|
-            event_received = true
-          end
+        event_received = false
+        with_subscription_to(/redis\z/, ->(*_) { event_received = true }) do
           redis.keys('abc123*')
           expect(event_received).to eq true
-        ensure
-          ActiveSupport::Notifications.unsubscribe(subscription)
         end
       end
 
@@ -27,15 +22,19 @@ module RCI
       end
 
       it 'must include the name of the command as part of the notification payload' do
-        begin
-          caught_payload = {}
-          subscription = ActiveSupport::Notifications.subscribe(/redis\z/) do |name, started, finished, unique_id, payload|
-            caught_payload = payload
-          end
+        caught_payload = {}
+        with_subscription_to(/redis\z/, ->(*args) { caught_payload = args.last }) do
           redis.keys('abc123*')
           expect(caught_payload[:command]).to eq :keys
-        ensure
-          ActiveSupport::Notifications.unsubscribe(subscription)
+        end
+      end
+
+      it 'must include a subcommand key in the payload for script commands' do
+        caught_payload = {}
+        with_subscription_to(/redis\z/, ->(*args) { caught_payload = args.last }) do
+          redis.script(:exists, 'foo')
+          expect(caught_payload[:command]).to eq :script
+          expect(caught_payload[:subcommand]).to eq :exists
         end
       end
     end
